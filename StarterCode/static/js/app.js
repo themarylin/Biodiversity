@@ -11,7 +11,6 @@ function buildMetadata(sample) {
   // Use `d3.json` to fetch the metadata for a sample
   d3.json(`/metadata/${sample}`).then(function (data) {
     for (var i = 0; i < Object.keys(data).length; i++) {
-      console.log(data[i]);
       Panel.append("p")
         .text(`${Object.entries(data)[i][0]} : ${Object.entries(data)[i][1]}`);
     };
@@ -22,14 +21,44 @@ function buildMetadata(sample) {
 }
 
 function buildCharts(sample) {
-
+  var DataFrame = dfjs.DataFrame;
+  var pieChart = d3.select("#pie");
   // @TODO: Use `d3.json` to fetch the sample data for the plots
+  d3.json(`/samples/${sample}`).then(function (data) {
+    columns = ["otu_ids", "otu_labels", "sample_values"];
+    const weatherDF = new DataFrame(data, columns);
+    weatherDF.show();
+
+    const otuIDs = data.otu_ids.slice(0, 9);
+    //console.log(otuIDs);
+    const otuLabels = data.otu_labels.slice(0, 9);
+    //console.log(otuLabels);
+    const sampleValue = data.sample_values.slice(0, 9);
+    //console.log(sampleValue);
+
+    var trace1 = {
+      labels: otuIDs,
+      values: sampleValue,
+      type: 'pie'
+    };
+
+    var data = [trace1];
+
+    var layout = {
+      title: "Top 10 samples",
+    };
+
+    Plotly.newPlot("pie", data, layout);
+
+  });
 
   // @TODO: Build a Bubble Chart using the sample data
 
+
   // @TODO: Build a Pie Chart
+
   // HINT: You will need to use slice() to grab the top 10 sample_values,
-  // otu_ids, and labels (10 each).
+  // otu_ids, and labels (10 each)
 }
 
 function init() {
