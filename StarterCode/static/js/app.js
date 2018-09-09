@@ -29,36 +29,49 @@ function buildCharts(sample) {
     const weatherDF = new DataFrame(data, columns);
     weatherDF.show();
 
-    const otuIDs = data.otu_ids.slice(0, 9);
-    //console.log(otuIDs);
-    const otuLabels = data.otu_labels.slice(0, 9);
-    //console.log(otuLabels);
-    const sampleValue = data.sample_values.slice(0, 9);
-    //console.log(sampleValue);
+    const otuIDs_sliced = data.otu_ids.slice(0, 9);
+    const sampleValue_sliced = data.sample_values.slice(0, 9);
 
+    const otuIDs = data.otu_ids;
+    const otuLabels = data.otu_labels;
+    const sampleValue = data.sample_values;
+
+    // @TODO: Build a pie chart
     var trace1 = {
-      labels: otuIDs,
-      values: sampleValue,
+      labels: otuIDs_sliced,
+      values: sampleValue_sliced,
       type: 'pie'
     };
 
     var data = [trace1];
 
     var layout = {
-      title: "Top 10 samples",
+      title: `Top 10 values from Sample: ${sample}`,
     };
 
     Plotly.newPlot("pie", data, layout);
 
+    // @TODO: Build a Bubble Chart using the sample data
+    // #bubble
+    var bubble1 = {
+      x: otuIDs,
+      y: sampleValue,
+      mode: 'markers',
+      type: 'scatter',
+      name: 'otu_Ids',
+      text: otuLabels,
+      marker: { size: sampleValue },
+      color: sampleValue
+    };
+    var layout = {
+      title: "All Samples and their values",
+    };
+    var bubbleData = [bubble1];
+
+    Plotly.newPlot('bubble', bubbleData, layout);
   });
 
-  // @TODO: Build a Bubble Chart using the sample data
 
-
-  // @TODO: Build a Pie Chart
-
-  // HINT: You will need to use slice() to grab the top 10 sample_values,
-  // otu_ids, and labels (10 each)
 }
 
 function init() {
